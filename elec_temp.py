@@ -37,11 +37,22 @@ def get_config(config_file):
     config_dict['general']['upload_graph'] = config.getboolean('general', 'upload_graph')
     return config_dict
 
+def get_month_colors(dates):
+    '''
+    Assign a color for each month
+    '''
+    color_list = ("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928")
+    month_colors = []
+    for date in dates:
+        month_colors.append(color_list[(date.month - 1)])
+    return month_colors
+
 def graph_plotly(data, fit1, fit2, config_dict):
     print('Making Plotly graph...')
     py.sign_in(config_dict['secrets']['plotly_userid'], config_dict['secrets']['plotly_apikey'])
+    mycolors = get_month_colors(data['index'])
     Scatter1 = Scatter(x=data['0_x'],
-               y=data['0_y'], name='Recorded Data', mode='markers', marker=Marker(color='red'), text=data['index'])
+               y=data['0_y'], name='Recorded Data', mode='markers', marker=Marker(color=mycolors), text=data['index'])
     Line1 = Scatter(x=fit1['x'],
                y=fit1['y'], name='Linear Fit (R<sup>2</sup> = ' +str(fit1['r2']) + ')', mode='lines', line=Line(color='orange'))
     Line2 = Scatter(x=fit2['x'],
